@@ -1,0 +1,94 @@
+package javaprogramng;
+
+public class Sudoku {
+
+	    private static final int SIZE = 9; // size of the grid 9x9
+
+	          public boolean solveSudoku(int[][] board) { // Method to solve the Sudoku puzzle
+	        	  for (int row = 0; row < SIZE; row++) {
+	            for (int col = 0; col < SIZE; col++) {
+	                // Find an empty cell
+	                if (board[row][col] == 0) {
+	                    // Try all possible numbers for this cell
+	                    for (int num = 1; num <= SIZE; num++) {
+	                        if (isSafe(board, row, col, num)) {
+	                            board[row][col] = num;
+	                            if (solveSudoku(board)) {
+	                                return true; // Puzzle solved
+	                            } else {
+	                                board[row][col] = 0; // Reset for backtracking
+	                            }
+	                        }
+	                    }
+	                    return false; // Trigger backtracking
+	                }
+	            }
+	        }
+	        return true; // No empty cell means puzzle solved
+	    }
+
+	    // Check if placing num in board[row][col] is valid
+	    private boolean isSafe(int[][] board, int row, int col, int num) {
+	        // Check row and column
+	        for (int i = 0; i < SIZE; i++) {
+	            if (board[row][i] == num || board[i][col] == num) {
+	                return false;
+	            }
+	        }
+	        // Check 3x3 subgrid
+	        int boxRowStart = row - row % 3;
+	        int boxColStart = col - col % 3;
+	        for (int r = boxRowStart; r < boxRowStart + 3; r++) {
+	            for (int c = boxColStart; c < boxColStart + 3; c++) {
+	                if (board[r][c] == num) {
+	                    return false;
+	                }
+	            }
+	        }
+	        return true;
+	    }
+
+	    // Method to print the Sudoku board
+	    public void printBoard(int[][] board) {
+	        for (int row = 0; row < SIZE; row++) {
+	            if (row % 3 == 0 && row != 0) {
+	                System.out.println("-----------+------------+-----------");
+	            }
+	            for (int col = 0; col < SIZE; col++) {
+	                if (col % 3 == 0 && col != 0) {
+	                    System.out.print(" | ");
+	                }
+	                System.out.print(board[row][col] + " ");
+	            }
+	            System.out.println();
+	        }
+	    }
+
+	    // Main method to test the solver
+	    public static void main(String[] args) {
+	        int[][] puzzle = {
+	            {5, 3, 0, 0, 7, 0, 0, 0, 0},
+	            {6, 0, 0, 1, 9, 5, 0, 0, 0},
+	            {0, 9, 8, 0, 0, 0, 0, 6, 0},
+	            {8, 0, 0, 0, 6, 0, 0, 0, 3},
+	            {4, 0, 0, 8, 0, 3, 0, 0, 1},
+	            {7, 0, 0, 0, 2, 0, 0, 0, 6},
+	            {0, 6, 0, 0, 0, 0, 2, 8, 0},
+	            {0, 0, 0, 4, 1, 9, 0, 0, 5},
+	            {0, 0, 0, 0, 8, 0, 0, 7, 9}
+	        };
+
+	        Sudoku solver = new Sudoku();
+	        System.out.println("Original Sudoku puzzle:");
+	        solver.printBoard(puzzle);
+
+	        if (solver.solveSudoku(puzzle)) {
+	            System.out.println("\nSolved Sudoku puzzle:");
+	            solver.printBoard(puzzle);
+	        } else {
+	            System.out.println("No solution exists.");
+	        }
+	    }
+	}
+
+
